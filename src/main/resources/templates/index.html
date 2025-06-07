@@ -2,16 +2,29 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="https://www.thymeleaf.org/extras/spring-security">
-
 <head th:insert="~{common :: commonHead}">
     <title>Product Manager</title>
 </head>
-
 <body>
+
+<!-- ✅ 우측 상단 로그아웃 버튼 -->
+<nav class="navbar navbar-light bg-light justify-content-end px-4">
+    <div sec:authorize="hasRole('ADMIN')">
+        <form th:action="@{/admin/users}" method="get">
+            <button type="submit" class="btn btn-outline-dark">유저 조회</button>
+        </form>
+    </div>
+    <div sec:authorize="isAuthenticated()">
+        <form th:action="@{/logout}" method="post">
+            <button type="submit" class="btn btn-outline-danger">Logout</button>
+        </form>
+    </div>
+</nav>
+
 <div class="container">
     <h1 class="mt-5">Product List</h1>
 
-    <!-- 관리자만 Create 버튼 보이도록 -->
+    <!-- ✅ ADMIN만 Create 버튼 보임 -->
     <div sec:authorize="hasRole('ADMIN')">
         <a class="btn btn-primary mb-3" th:href="@{/products/new}">Create New Product</a>
     </div>
@@ -35,7 +48,7 @@
             <td th:text="${product.madeIn}">Made in</td>
             <td th:text="${product.price}">Price</td>
             <td>
-                <!-- 관리자만 수정/삭제 버튼 보이도록 -->
+                <!-- ✅ ADMIN만 Edit/Delete 버튼 보임 -->
                 <div sec:authorize="hasRole('ADMIN')">
                     <a class="btn btn-primary btn-sm" th:href="@{'/products/edit/' + ${product.id}}">Edit</a>
                     <a class="btn btn-danger btn-sm" th:href="@{'/products/delete/' + ${product.id}}">Delete</a>
